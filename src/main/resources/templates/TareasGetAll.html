@@ -1,0 +1,185 @@
+<!DOCTYPE html>
+<!--
+Click nbfs://nbhost/SystemFileSystem/Templates/Licenses/license-default.txt to change this license
+Click nbfs://nbhost/SystemFileSystem/Templates/Other/html.html to edit this template
+-->
+<html>
+    <head xmlns:th="http:thymeleaf.org">
+        <title>TODO supply a title</title>
+        <meta charset="UTF-8">
+        <meta name="viewport" content="width=device-width, initial-scale=1.0">
+        <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/css/bootstrap.min.css" rel="stylesheet" integrity="sha384-QWTKZyjpPEjISv5WaRU9OFeRpok6YctnYmDr5pNlyT2bRjXh0JMhjY6hW+ALEwIH" crossorigin="anonymous">
+        <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.3.0/font/bootstrap-icons.css">
+        <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/js/bootstrap.bundle.min.js" integrity="sha384-YvpcrYf0tY3lHB60NNkmXc5s9fDVZLESaAA55NDzOxhy9GkcIdslK1eN7N6jIeHz" crossorigin="anonymous"></script>
+        <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.7.1/jquery.min.js"></script>
+    </head>
+    <body>
+     <nav class="navbar navbar-expand-lg navbar-dark bg-dark">
+    <div class="container-fluid">
+        <a class="navbar-brand" href="#">Sistema de Gestor de Tareas</a>
+        <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbarNavDropdown" aria-controls="navbarNavDropdown" aria-expanded="false" aria-label="Toggle navigation">
+            <span class="navbar-toggler-icon"></span>
+        </button>
+        <div class="collapse navbar-collapse justify-content-end" id="navbarNavDropdown">
+            
+            <ul class="navbar-nav">
+                <li class="nav-item dropdown">
+                    <a class="nav-link dropdown-toggle" href="#" id="navbarDropdownMenuLink" role="button" data-bs-toggle="dropdown" aria-expanded="false">
+                        Acciones
+                    </a>
+                    <ul class="dropdown-menu dropdown-menu-end" aria-labelledby="navbarDropdownMenuLink">
+                        <li><a class="dropdown-item" href="#">Ver Perfil</a></li>
+                        <li><a class="dropdown-item" href="#">Cerrar sesion</a></li>
+                    </ul>
+                </li>
+                
+            </ul>
+        </div>
+    </div>
+         
+     </nav><br><br>
+     
+     <!-- aqui se encuentran los botones para mostrar -->
+        <div class="row" id="grupo6"> 
+         <div class="btn-group">    
+                <input id="MostrarTabla" type="submit"  class="btn btn-primary" value="Mostrar datos en tabla" onclick="MostrarTabla('grupo6')"><br>
+                 <input id="obj2" type="submit"  class="btn btn-danger" value="Mostrar datos en tabla" onclick="MostrarCards()">
+            </div>   
+        </div><br><br>
+     
+    
+   
+     <!--Boton de agreagar >-->
+     <div class="row" id="grupo1" >
+         <div class="col">
+            <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" fill="currentColor" class="bi bi-person-fill-add" viewBox="0 0 16 16">
+          <path d="M12.5 16a3.5 3.5 0 1 0 0-7 3.5 3.5 0 0 0 0 7m.5-5v1h1a.5.5 0 0 1 0 1h-1v1a.5.5 0 0 1-1 0v-1h-1a.5.5 0 0 1 0-1h1v-1a.5.5 0 0 1 1 0m-2-6a3 3 0 1 1-6 0 3 3 0 0 1 6 0"/>
+          <path d="M2 13c0 1 1 1 1 1h5.256A4.5 4.5 0 0 1 8 12.5a4.5 4.5 0 0 1 1.544-3.393Q8.844 9.002 8 9c-5 0-6 3-6 4"/></svg>        
+          <a  class="btn btn-success text-center" onclick="ocultar('grupo1')" style="display:none"> Agregar Nueva Tarea</a>  
+         </div>
+     </div><br><br>
+     
+     <!-- aqui se encuentran mi busqueda -->
+     <div class="row"  id="Busqueda" >
+         <div class="col-md-2">
+            <form th:action="@{/tarea}" th:object="${usuarioTaras}" method="get">
+                <button type="submit" class="btn btn-success btn-block">Todas las Tareas</button>  
+            </form>
+         </div>
+     
+         <div class="col-md-2">
+          <form th:action="@{/tarea/pendiente}" th:object="${usuarioTaras}" method="get">
+            <button id="miBoton" class="btn btn-success"  onclick="cambiarColor()" type="submit" >Tareas Pendiente</button> 
+          </form>
+         </div>
+
+     
+         <div class="col-md-2">
+          <form th:action="@{/tarea/completado}" th:object="${usuarioTaras}" method="get">
+                <button type="submit" class="btn btn-success btn-block">Tareas Completadas</button>
+          </form>
+         </div>
+
+         <div class="col-md-2">
+          <form th:action="@{/tarea/vencido}" th:object="${usuarioTaras}" method="get">
+                <button type="submit" class="btn btn-success btn-block">Tareas Vencidas</button> 
+          </form>
+         </div>
+         
+     </div><br>
+   
+     
+    <!-- aqui se encuentran la parte de la tabla -->
+     <div class="container d-flex justify-content-center">
+      <table id="miTabla"   class="table table-responsive table-bordered">
+          
+
+                <thead class="table-dark text-center">
+
+                <th class="text-white">Id 
+                    <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" fill="currentColor" class="bi bi-arrow-down-circle-fill" viewBox="0 0 16 16">
+                    <path d="M16 8A8 8 0 1 1 0 8a8 8 0 0 1 16 0M8.5 4.5a.5.5 0 0 0-1 0v5.793L5.354 8.146a.5.5 0 1 0-.708.708l3 3a.5.5 0 0 0 .708 0l3-3a.5.5 0 0 0-.708-.708L8.5 10.293z"/></svg>
+                </th>
+                <th class="text-white">Titulo</th>
+                <th class="text-white">Descripcion</th>
+                <th class="text-white">Fecha Vencimiento</th>
+                <th class="text-white">Estado</th>
+                <th class="text-white">Accion</th>
+               
+                </thead>
+                <tbody>
+                    <tr th:each="usuarioTaras: ${usuarioTaras}">
+                        <td><a th:href="@{/login/form/{IdTarea}(IdTarea=${usuarioTaras.IdTarea})}" class="btn btn-danger" ><i class="bi bi-pencil-square"></i></a></td>
+                        <td th:text="${usuarioTaras.Titulo}"></td>
+                        <td th:text="${usuarioTaras.Descripcion}"></td>
+                        <td th:text="${usuarioTaras.FechaVencimiento}"></td>
+                        <td th:text="${usuarioTaras.estado.Estatus}"></td>
+                        
+                    </tr>
+                </tbody>
+      </table><br>
+     
+         
+     </div><br>
+     <!-- termina mi tabla  -->
+     
+      <!--Comienza mi formulario -->
+      <div class="container d-flex justify-content-center" id="Formulario" style="display:none">
+          <h3 id="Titulo" style="display:none">Registro de Tarea</h3>
+         <form class="registration row"  th:action="@{/tarea/form}" method="post" th:object="${empresa}"  style="width: 26rem;">
+  <div data-mdb-input-init class="form-outline mb-4">
+    <input type="text" id="form4Example1" class="form-control" />
+    <label class="form-label" for="form4Example1">Titulo de la Tarea</label>
+  </div>
+
+  <!-- Message input -->
+  <div data-mdb-input-init class="form-outline mb-4">
+    <textarea class="form-control" id="form4Example3" rows="4"></textarea>
+    <label class="form-label" for="form4Example3">Descripcion de la Tarea</label>
+  </div>
+  
+   <div class="row mb-4">
+    <div class="col">
+      <div data-mdb-input-init class="form-outline">
+        <input type="text" id="form3Example1" class="form-control" />
+        <label class="form-label" for="form3Example1">Fecha de Vencimiento</label>
+      </div>
+    </div>
+  </div>
+  
+          <button type="submit"  class="btn btn-primary ">Agregar Tarea</button>
+     
+     </form> 
+      </div>
+     
+   <!-- termina mi Formulario -->
+     
+    </body>
+</html>
+
+<script>
+
+    function ocultar(id){
+    var elemento = document.getElementById(id);
+    elemento.style.display = "none";
+    document.getElementById('Formulario').style.display = 'block';
+    document.getElementById('Titulo').style.display = 'block';
+    }
+    function MostrarTabla(id){
+    var elemento = document.getElementById(id);
+    elemento.style.display = "none";
+    document.getElementById('miTabla').style.display = 'block';
+    document.getElementById('grupo1').style.display = 'block';
+    }
+    function cambiarColor() {
+     document.getElementById("miBoton").addEventListener("click", function() {
+    this.classList.add("clicked");
+    });
+    }
+    
+    
+    
+
+
+      
+</script>
